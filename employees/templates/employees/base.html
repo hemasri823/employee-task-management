@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Employee Task System</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+body { background:#f5f7fb; overflow-x:hidden; }
+
+/* Desktop Sidebar */
+.sidebar {
+  width:240px;
+  background:#0f172a;
+  color:white;
+  position:fixed;
+  top:0; bottom:0; left:0;
+  padding:20px;
+  display:flex; flex-direction:column;
+}
+.sidebar h5 { color:white; margin-bottom:20px; }
+
+.sidebar a {
+  color:#cbd5e1;
+  padding:10px;
+  text-decoration:none;
+  display:flex; align-items:center; gap:10px;
+  border-radius:6px;
+  margin-bottom:6px;
+  font-size:15px;
+}
+.sidebar a:hover, .sidebar a.active {
+  background:#2563eb;
+  color:white;
+}
+
+/* Content */
+.content { margin-left:260px; padding:25px; }
+
+/* Hide sidebar on tablet & mobile */
+@media(max-width:992px){
+  .sidebar { display:none; }
+  .content { margin-left:0; }
+}
+
+/* Mobile Navbar */
+.mobile-header {
+  position:fixed; top:0; left:0; right:0;
+  background:#0f172a;
+  z-index:999;
+  padding:12px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.mobile-header .brand {
+  color:white; font-size:18px; font-weight:600;
+}
+.mobile-header button {
+  border:1px solid #fff;
+}
+
+/* Space below mobile nav */
+.mobile-space { height:60px; }
+
+/* Offcanvas Menu */
+.offcanvas-menu ul{ list-style:none; padding:0; }
+.offcanvas-menu a{
+  display:block; padding:12px; color:white; text-decoration:none;
+}
+.offcanvas-menu a:hover{ background:#2563eb; }
+</style>
+</head>
+
+<body>
+
+<!-- ✅ Mobile Top Bar -->
+<div class="mobile-header d-lg-none">
+  <span class="brand">Employee Task System</span>
+  <button class="btn btn-sm btn-outline-light" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu">
+    <i class="fa fa-bars"></i>
+  </button>
+</div>
+<div class="mobile-space d-lg-none"></div>
+
+<!-- ✅ Desktop Sidebar -->
+<div class="sidebar d-none d-lg-flex">
+  <h5>Employee Task System</h5>
+  <a href="{% url 'dashboard' %}"><i class="fa fa-chart-line"></i> Dashboard</a>
+  <a href="{% url 'employee_list' %}"><i class="fa fa-users"></i> Employees</a>
+  <a href="{% url 'task_list' %}"><i class="fa fa-tasks"></i> Tasks</a>
+  <a href="{% url 'import_excel' %}"><i class="fa fa-file-import"></i> Import</a>
+  <a href="{% url 'export_excel' %}"><i class="fa fa-file-export"></i> Export</a>
+</div>
+
+<!-- ✅ Mobile Offcanvas Sidebar -->
+<div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="sidebarMenu">
+  <div class="offcanvas-header">
+    <h5>Employee Task System</h5>
+    <button class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+  </div>
+
+  <div class="offcanvas-body offcanvas-menu">
+    <ul>
+      <li><a href="{% url 'dashboard' %}"><i class="fa fa-chart-line"></i> Dashboard</a></li>
+      <li><a href="{% url 'employee_list' %}"><i class="fa fa-users"></i> Employees</a></li>
+      <li><a href="{% url 'task_list' %}"><i class="fa fa-tasks"></i> Tasks</a></li>
+      <li><a href="{% url 'import_excel' %}"><i class="fa fa-file-import"></i> Import</a></li>
+      <li><a href="{% url 'export_excel' %}"><i class="fa fa-file-export"></i> Export</a></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ✅ Page Content -->
+<div class="content">
+  {% block content %}{% endblock %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

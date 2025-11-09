@@ -1,0 +1,25 @@
+{% extends 'employees/base.html' %}
+{% block content %}
+<div class="container mt-4">
+
+    <h3>Import Employees from Excel</h3>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label>Select Excel File (.xlsx)</label>
+            <input type="file" name="file" class="form-control" required>
+        </div>
+        <button class="btn btn-success">Upload Excel</button>
+        <a href="{% url 'employee_list' %}" class="btn btn-secondary">Back</a>
+    </form>
+
+    <hr>
+
+    <b>Excel Format Example:</b>
+    <table class="table table-bordered mt-2" style="width:350px;">
+        <tr><th>Name</th><th>Email</th><th>Role</th></tr>
+        <tr><td>Ramu</td><td>ramu@example.com</td><td>Java Developer</td></tr>
+    </table>
+
+</div>
+{% endblock %}

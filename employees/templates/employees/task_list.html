@@ -1,0 +1,106 @@
+{% extends 'employees/base.html' %}
+{% block content %}
+
+<!-- Header with Buttons -->
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+  <h3 class="m-0">Tasks</h3>
+
+  <div class="d-flex flex-wrap gap-2 buttons-bar">
+    <a href="{% url 'import_tasks_excel' %}" class="btn btn-info btn-sm">📥 Import</a>
+    <a href="{% url 'export_tasks_excel' %}" class="btn btn-success btn-sm">📤 Export</a>
+    <a href="{% url 'add_task' %}" class="btn btn-primary btn-sm">+ Add Task</a>
+  </div>
+</div>
+
+<!-- ✅ Search Bar -->
+<form method="get" class="mb-3 w-100">
+  <div class="input-group search-bar">
+    <input type="text" name="search" value="{{ search }}" placeholder="Search tasks..." class="form-control">
+    <button class="btn btn-dark">Search</button>
+  </div>
+</form>
+
+<!-- Table -->
+<div class="table-responsive shadow bg-white p-3 rounded">
+  <table class="table table-bordered align-middle text-center">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Employee</th>
+        <th>Status</th>
+        <th>Created</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for t in tasks %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ t.title }}</td>
+        <td>{{ t.employee.name }}</td>
+        
+        <td>
+          {% if t.status == "Completed" %}
+            <span class="badge bg-success">{{ t.status }}</span>
+          {% elif t.status == "In Progress" %}
+            <span class="badge bg-warning text-dark">{{ t.status }}</span>
+          {% else %}
+            <span class="badge bg-secondary">{{ t.status }}</span>
+          {% endif %}
+        </td>
+
+        <td>{{ t.created_at|date:"Y-m-d H:i" }}</td>
+
+        <td class="d-flex justify-content-center gap-2 flex-wrap">
+          <a class="btn btn-sm btn-warning" href="{% url 'edit_task' t.id %}">Edit</a>
+          <a class="btn btn-sm btn-danger" href="{% url 'delete_task' t.id %}">Delete</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6" class="text-center">No tasks found</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<style>
+/* ✅ Buttons align right on desktop */
+.buttons-bar {
+  margin-left: auto;
+}
+.search-bar .form-control:focus {
+  box-shadow: 0 0 8px rgba(0,0,0,0.15) !important;
+  border-color: #000 !important;
+}
+
+
+/* ✅ Laptop: search bar full width */
+@media(min-width: 992px){
+  .search-bar { max-width: 100% !important; }
+}
+
+/* ✅ Mobile: normal width search bar */
+@media(max-width: 991px){
+  .search-bar { max-width: 400px; }
+}
+
+/* ✅ Button spacing on small screens */
+@media(max-width: 768px){
+  .btn-sm {
+    margin-bottom: 5px;
+    min-width: 90px;
+  }
+
+  .buttons-bar {
+    width: 100%;
+    justify-content: flex-start;
+    margin-top: 6px;
+  }
+}
+</style>
+
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'employees/base.html' %}
+{% block content %}
+<div class="card-box" style="max-width:700px;">
+  <h3>{% if form.instance.pk %}Edit Task{% else %}Add Task{% endif %}</h3>
+
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="mb-3">
+      <label class="form-label">Employee</label>
+      {{ form.employee }}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Title</label>
+      {{ form.title }}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Description</label>
+      {{ form.description }}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Due Date</label>
+      {{ form.due_date }}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Status</label>
+      {{ form.status }}
+    </div>
+
+    <button class="btn btn-success">Save Task</button>
+    <a class="btn btn-secondary" href="{% url 'task_list' %}">Back</a>
+  </form>
+</div>
+{% endblock %}

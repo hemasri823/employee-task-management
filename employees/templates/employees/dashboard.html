@@ -1,0 +1,188 @@
+{% extends 'employees/base.html' %}
+{% block content %}
+
+<style>
+.dashboard-title {
+  font-size: 26px;
+  font-weight: 800;
+  margin-bottom: 25px;
+  color: #1e3a8a;
+}
+
+/* STAT CARDS */
+.stat-card {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 14px;
+  text-align: center;
+  transition: .25s;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.10);
+}
+.stat-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.20);
+}
+.stat-card h3 {
+  font-size: 34px;
+  font-weight: 800;
+  color: #2563eb;
+}
+.stat-card p {
+  font-weight: 500;
+  color: #475569;
+}
+
+/* TABLE */
+.table-card {
+  background: #fff;
+  padding: 25px;
+  border-radius: 14px;
+  margin-top: 25px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.10);
+  transition: all 0.3s ease-in-out;
+}
+.table-card:hover{  transform: translateY(-8px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.20);}
+/* CHART BOX */
+.chart-box, .info-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.10);
+  margin-bottom: 15px;
+  transition: .25s;
+}
+.chart-box:hover, .info-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+}
+.chart-box h5, .info-card h6 {
+  font-weight: 700;
+}
+
+/* Chart Sizes Default (Laptop) */
+.chart-box canvas { max-height: 320px; }
+.task-status canvas { max-height: 350px; }
+
+/* ✅ Tablet Fix */
+@media (max-width: 1024px) {
+  .task-status canvas {
+    max-height: 260px !important; /* reduce pie chart */
+  }
+}
+
+/* ✅ Mobile Fix */
+@media (max-width: 768px) {
+  .chart-box canvas {
+    max-height: 230px !important;
+  }
+  .task-status canvas {
+    max-height: 220px !important;
+  }
+}
+</style>
+
+<h2 class="dashboard-title">📊 Overview</h2>
+
+<!-- Stats Row -->
+<div class="row g-4">
+  <div class="col-md-4"><div class="stat-card"><h3>{{ total_employees }}</h3><p>Total Employees</p></div></div>
+  <div class="col-md-4"><div class="stat-card"><h3>{{ total_tasks }}</h3><p>Total Tasks</p></div></div>
+  <div class="col-md-4"><div class="stat-card"><h3>{{ completed_tasks }}</h3><p>Completed Tasks</p></div></div>
+</div>
+
+<!-- Recent Employees -->
+<div class="table-card mt-4">
+  <h4 class="fw-bold mb-3">👥 Recent Employees</h4>
+  <table class="table table-bordered">
+    <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th></tr></thead>
+    <tbody>
+      {% for emp in recent_employees %}
+      <tr><td>{{ forloop.counter }}</td><td>{{ emp.name }}</td><td>{{ emp.email }}</td><td>{{ emp.role }}</td> </tr>
+      {% empty %}
+      <tr><td colspan="4" class="text-center text-muted">No records</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- ✅ Charts Layout -->
+<div class="row mt-4">
+
+  <!-- PIE CHART FULL HEIGHT -->
+  <div class="col-md-4 task-status">
+    <div class="chart-box">
+      <h5>Task Status</h5>
+      <canvas id="statusChart"></canvas>
+    </div>
+  </div>
+
+  <!-- RIGHT SIDE -->
+  <div class="col-md-8">
+    <div class="row">
+
+      <!-- Employees vs Tasks -->
+      <div class="col-md-6">
+        <div class="chart-box">
+          <h5>Employees vs Tasks</h5>
+          <canvas id="employeeTaskChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Task Trend -->
+      <div class="col-md-6">
+        <div class="chart-box">
+          <h5>Task Trend</h5>
+          <canvas id="trendChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Upcoming -->
+      <div class="col-md-6">
+        <div class="info-card text-center">
+          <h6>Upcoming Tasks</h6>
+          <h2 style="color:green">{{ upcoming_tasks }}</h2>
+          <small>Future scheduled tasks</small>
+        </div>
+      </div>
+
+      <!-- Overdue -->
+      <div class="col-md-6">
+        <div class="info-card text-center">
+          <h6>Overdue Tasks</h6>
+          <h2 style="color:#dc2626">{{ overdue_tasks }}</h2>
+          <small>Missed deadline tasks</small>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- ✅ Charts JS -->
+<script>
+const statusData = JSON.parse('{{ task_status_data|escapejs }}');
+const empTaskData = JSON.parse('{{ employee_task_data|escapejs }}');
+const trendData = JSON.parse('{{ task_trend|escapejs }}');
+
+new Chart(statusChart, {
+  type:'pie',
+  data:{ labels:statusData.map(x=>x.status), datasets:[{ data:statusData.map(x=>x.count) }] },
+  options:{ animation:{ animateScale:true, animateRotate:true } }
+});
+
+new Chart(employeeTaskChart, {
+  type:'bar',
+  data:{ labels:empTaskData.map(x=>x.name), datasets:[{ data:empTaskData.map(x=>x.task_count) }] }
+});
+
+new Chart(trendChart, {
+  type:'line',
+  data:{ labels:trendData.map(x=>x.date), datasets:[{ data:trendData.map(x=>x.count), tension:0.4 }] }
+});
+</script>
+
+{% endblock %}
