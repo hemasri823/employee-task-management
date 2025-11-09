@@ -1,14 +1,11 @@
 services:
   - type: web
-    name: employee-task-system
+    name: employee-task-management
     env: python
-    plan: free
-    buildCommand: "./build.sh"
-    startCommand: "gunicorn employee_task_mgmt.wsgi:application"
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn employee_task_mgmt.wsgi
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.10
-      - key: DEBUG
-        value: False
       - key: SECRET_KEY
-        generateValue: true
+        value: 'django-insecure-$)jynyv86j8o*w1v&1aku3*7)q(!wfrowr!eo22s*l2(_7f)5q'
+      - key: DEBUG
+        value: "False"

@@ -33,15 +33,17 @@ SECRET_KEY = 'django-insecure-$)jynyv86j8o*w1v&1aku3*7)q(!wfrowr!eo22s*l2(_7f)5q
 
 # SECURITY WARNING: don't run with debug turned on in production!
 import os
+from dotenv import load_dotenv
 
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+load_dotenv()
+
+DEBUG = os.getenv("DEBUG", "False") == "True"
+SECRET_KEY = os.getenv("SECRET_KEY", "fallback-secret-key")
 
 if DEBUG:
-    ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+    ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 else:
-    ALLOWED_HOSTS = ['employee-task-management-eibe.onrender.com']
-
-
+    ALLOWED_HOSTS = ["employee-task-management-eibe.onrender.com"]
 
 
 
@@ -143,3 +145,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # where collectstatic will put files
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
