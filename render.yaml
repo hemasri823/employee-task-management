@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: employee-task-system
+    env: python
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn employee_task_mgmt.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10
+      - key: DEBUG
+        value: False
+      - key: SECRET_KEY
+        generateValue: true
