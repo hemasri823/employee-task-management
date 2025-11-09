@@ -31,6 +31,7 @@ A **Django web application** to manage employees and their tasks efficiently. Th
 
 ## 📂 Project Structure
 
+```
 employee-task-management/
 ├── employee_task_mgmt/ # Django settings & configuration
 ├── employees/ # Main app with models, views, templates
@@ -39,6 +40,7 @@ employee-task-management/
 ├── requirements.txt # Dependencies
 ├── .gitignore # Ignored files
 └── README.md # Project documentation
+```
 
 ---
 
